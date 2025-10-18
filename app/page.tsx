@@ -1,103 +1,277 @@
-import Image from "next/image";
+"use client";
+import styled from "styled-components";
+import { EventJsonLd } from "next-seo";
+import {
+  FiCalendar,
+  FiFeather,
+  FiHeart,
+  FiImage,
+  FiSend,
+} from "react-icons/fi";
+import Cover from "@/components/sections/Cover";
+import CountdownTimer from "@/components/CountdownTimer";
+import { galaEventJsonLd } from "@/lib/seo";
+
+const ScrollContainer = styled.div`
+  height: 100vh;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  background: rgba(255, 242, 246, 0.65);
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+`;
+
+const Section = styled.section<{ $tone?: "light" | "dark" }>`
+  min-height: 100vh;
+  width: 100%;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(1.75rem, 5vw, 2.75rem);
+  padding: clamp(2.75rem, 10vw, 4rem) clamp(1.75rem, 8vw, 4rem);
+  background: ${({ $tone, theme }) =>
+    $tone === "dark"
+      ? `linear-gradient(180deg, rgba(61, 42, 47, 0.95) 0%, rgba(75, 49, 54, 0.9) 100%)`
+      : `linear-gradient(180deg, rgba(255, 245, 247, 0.95) 0%, rgba(255, 231, 238, 0.88) 100%)`};
+  color: ${({ $tone }) => ($tone === "dark" ? "#f8fafc" : "inherit")};
+  --intro-color: ${({ $tone, theme }) =>
+    $tone === "dark" ? "rgba(253, 231, 237, 0.82)" : theme.colors.muted};
+  --chip-bg: ${({ $tone, theme }) =>
+    $tone === "dark" ? "rgba(255, 255, 255, 0.16)" : theme.colors.highlight};
+  --chip-color: ${({ $tone, theme }) =>
+    $tone === "dark" ? "#fdebec" : theme.colors.accent};
+`;
+
+const SectionTitle = styled.h2`
+  font-family: ${({ theme }) => theme.fonts.serif};
+  font-size: clamp(2rem, 6vw, 3rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+`;
+
+const SectionIntro = styled.p`
+  max-width: 36rem;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--intro-color);
+`;
+
+const HighlightCard = styled.div`
+  display: grid;
+  gap: 0.75rem;
+  padding: clamp(1.5rem, 5vw, 2.25rem);
+  border-radius: ${({ theme }) => theme.radii.lg};
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(183, 120, 122, 0.2);
+  backdrop-filter: blur(12px);
+  box-shadow: ${({ theme }) => theme.shadow.soft};
+`;
+
+const Timeline = styled.ul`
+  display: grid;
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+`;
+
+const TimelineItem = styled.li`
+  display: grid;
+  gap: 0.4rem;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid rgba(183, 120, 122, 0.28);
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: -0.85rem;
+    top: 1.1rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: ${({ theme }) => theme.colors.accent};
+    box-shadow: 0 0 0 6px rgba(183, 120, 122, 0.16);
+  }
+`;
+
+const TimelineTitle = styled.span`
+  font-weight: 600;
+  letter-spacing: 0.04em;
+`;
+
+const TimelineDescription = styled.p`
+  font-size: 0.95rem;
+  color: ${({ theme }) => theme.colors.muted};
+`;
+
+const ChipRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+`;
+
+const Chip = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: ${({ theme }) => theme.radii.full};
+  background: var(--chip-bg);
+  color: var(--chip-color);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+`;
+
+const CTAButton = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  align-self: flex-start;
+  padding: 0.85rem 1.8rem;
+  border-radius: ${({ theme }) => theme.radii.full};
+  border: 1px solid transparent;
+  background: ${({ theme }) => theme.colors.accent};
+  color: #ffffff;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: transform 160ms ease, box-shadow 160ms ease,
+    background-color 160ms ease;
+  box-shadow: ${({ theme }) => theme.shadow.soft};
+
+  &:hover {
+    transform: translateY(-1px);
+    background: #8f4d58;
+  }
+`;
+
+const IconCircle = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 999px;
+  background: var(--chip-bg);
+  color: var(--chip-color);
+`;
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <ScrollContainer>
+      <EventJsonLd {...galaEventJsonLd} />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      <Cover
+        honoree="Valentina García"
+        date="28 de diciembre de 2025 · Recepción 6:30 pm · Inicio 7:00 pm"
+        location="Hacienda San Felipe, Querétaro"
+        musicSrc="/audio/ambient.mp3"
+      />
+
+      <Section $tone="dark">
+        <SectionTitle>Cuenta regresiva</SectionTitle>
+        <SectionIntro>
+          Cada latido nos acerca a esa noche que brillará en tonos rose gold.
+          Prepárate para vivir un momento inolvidable junto a Valentina.
+        </SectionIntro>
+        <CountdownTimer targetDate="2025-12-28T19:00:00-06:00" />
+      </Section>
+
+      <Section>
+        <SectionTitle>Una noche para recordar</SectionTitle>
+        <SectionIntro>
+          Acompáñanos a celebrar un capítulo muy especial. Diseñamos esta
+          experiencia digital para compartirte toda la emoción, los detalles del
+          evento y el ambiente que podrás disfrutar en esta gala.
+        </SectionIntro>
+
+        <HighlightCard>
+          <ChipRow>
+            <Chip>
+              <FiHeart /> Dress code elegante
+            </Chip>
+            <Chip>
+              <FiFeather /> Magia y sorpresas
+            </Chip>
+            <Chip>
+              <FiImage /> Photo booth
+            </Chip>
+          </ChipRow>
+          <p>
+            Desde la recepción hasta el último baile, cada momento ha sido
+            cuidadosamente planeado para que vivas una experiencia encantadora.
+          </p>
+        </HighlightCard>
+      </Section>
+
+      <Section $tone="light">
+        <SectionTitle>Itinerario</SectionTitle>
+        <SectionIntro>
+          Sincroniza tu noche con nosotros. Estos son los momentos clave que no
+          querrás perderte.
+        </SectionIntro>
+
+        <Timeline>
+          <TimelineItem>
+            <TimelineTitle>18:30 · Recepción y bienvenida</TimelineTitle>
+            <TimelineDescription>
+              Te esperamos con cocteles y un ensamble en vivo para comenzar con
+              el pie derecho.
+            </TimelineDescription>
+          </TimelineItem>
+          <TimelineItem>
+            <TimelineTitle>19:00 · Apertura de la gala</TimelineTitle>
+            <TimelineDescription>
+              Presentación oficial de Valentina y palabras especiales para dar
+              inicio a la celebración.
+            </TimelineDescription>
+          </TimelineItem>
+          <TimelineItem>
+            <TimelineTitle>20:30 · Cena de gala</TimelineTitle>
+            <TimelineDescription>
+              Un menú de tres tiempos inspirado en sabores contemporáneos, ideal
+              para brindar juntos.
+            </TimelineDescription>
+          </TimelineItem>
+          <TimelineItem>
+            <TimelineTitle>22:00 · Vals y fiesta</TimelineTitle>
+            <TimelineDescription>
+              DJ en vivo, cabina 360 y estaciones interactivas para seguir
+              celebrando hasta la madrugada.
+            </TimelineDescription>
+          </TimelineItem>
+        </Timeline>
+      </Section>
+
+      <Section $tone="dark">
+        <SectionTitle>Confirma tu presencia</SectionTitle>
+        <SectionIntro>
+          Queremos preparar todo a tu medida. Haznos saber si nos acompañarás y
+          cuéntanos cualquier detalle que debamos considerar.
+        </SectionIntro>
+
+        <ChipRow>
+          <Chip>
+            <IconCircle>
+              <FiCalendar />
+            </IconCircle>
+            RSVP antes del 30 de noviembre
+          </Chip>
+        </ChipRow>
+
+        <CTAButton href="/confirmar">
+          Confirmar asistencia
+          <FiSend />
+        </CTAButton>
+      </Section>
+    </ScrollContainer>
   );
 }
