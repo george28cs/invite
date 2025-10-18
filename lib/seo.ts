@@ -30,6 +30,11 @@ export const siteMetadata: Metadata = {
     card: "summary_large_image",
     creator: "@example",
   },
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
   alternates: {
     canonical: "https://example.com",
   },

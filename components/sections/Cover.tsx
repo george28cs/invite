@@ -9,7 +9,9 @@ type CoverProps = {
   honoree: string;
   date: string;
   location: string;
-  musicSrc: string;
+  onToggleAudio: () => void;
+  audioReady: boolean;
+  audioPlaying: boolean;
 };
 
 const CoverWrapper = styled.section`
@@ -76,7 +78,9 @@ export default function Cover({
   honoree,
   date,
   location,
-  musicSrc,
+  onToggleAudio,
+  audioReady,
+  audioPlaying,
 }: CoverProps) {
   return (
     <CoverWrapper>
@@ -115,7 +119,11 @@ export default function Cover({
         </Details>
 
         <MusicWrapper>
-          <MusicToggle src={musicSrc} />
+          <MusicToggle
+            isReady={audioReady}
+            isPlaying={audioPlaying}
+            onToggle={onToggleAudio}
+          />
         </MusicWrapper>
       </div>
 

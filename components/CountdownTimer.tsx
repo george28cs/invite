@@ -51,29 +51,39 @@ const ClockIcon = styled.span`
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, minmax(68px, 1fr));
-  gap: clamp(0.6rem, 3vw, 1.2rem);
+  gap: clamp(0.45rem, 2.5vw, 1.1rem);
   width: 100%;
+
+  @media (max-width: 420px) {
+    grid-template-columns: repeat(2, minmax(90px, 1fr));
+    row-gap: clamp(0.4rem, 3vw, 0.75rem);
+    column-gap: clamp(0.4rem, 4vw, 0.8rem);
+  }
 `;
 
 const Segment = styled.div`
-  padding: 0.85rem 0.6rem;
+  padding: 0.75rem 0.55rem;
   border-radius: ${({ theme }) => theme.radii.md};
   background: rgba(255, 255, 255, 0.24);
   border: 1px solid rgba(255, 255, 255, 0.35);
   display: grid;
   gap: 0.35rem;
+
+  @media (max-width: 420px) {
+    padding: 0.7rem 0.5rem;
+    gap: 0.28rem;
+  }
 `;
 
 const Value = styled.span`
   font-family: ${({ theme }) => theme.fonts.serif};
-  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  font-size: clamp(1.2rem, 6vw, 2.6rem);
   line-height: 1;
-  letter-spacing: 0.08em;
 `;
 
 const Label = styled.span`
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   opacity: 0.85;
 `;

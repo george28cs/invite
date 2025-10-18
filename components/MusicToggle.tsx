@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { FiMusic, FiVolumeX } from "react-icons/fi";
 
 type MusicToggleProps = {
-  src: string;
+  isReady: boolean;
+  isPlaying: boolean;
+  onToggle: () => void;
 };
 
 const ToggleButton = styled.button<{ $isActive: boolean }>`
@@ -44,51 +45,15 @@ const IconWrapper = styled.span`
   font-size: 1.1rem;
 `;
 
-export default function MusicToggle({ src }: MusicToggleProps) {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isReady, setIsReady] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  useEffect(() => {
-    const audio = new Audio(src);
-    audio.loop = true;
-    audio.preload = "auto";
-    audioRef.current = audio;
-
-    const onCanPlay = () => setIsReady(true);
-    audio.addEventListener("canplaythrough", onCanPlay);
-
-    return () => {
-      audio.pause();
-      audio.removeEventListener("canplaythrough", onCanPlay);
-      audioRef.current = null;
-    };
-  }, [src]);
-
-  const handleToggle = async () => {
-    const audio = audioRef.current;
-    if (!audio) {
-      return;
-    }
-
-    if (!isPlaying) {
-      try {
-        await audio.play();
-        setIsPlaying(true);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error("No se pudo reproducir el audio:", error);
-      }
-    } else {
-      audio.pause();
-      setIsPlaying(false);
-    }
-  };
-
+export default function MusicToggle({
+  isReady,
+  isPlaying,
+  onToggle,
+}: MusicToggleProps) {
   return (
     <ToggleButton
       type="button"
-      onClick={handleToggle}
+      onClick={onToggle}
       $isActive={isPlaying}
       disabled={!isReady}
       aria-pressed={isPlaying}
