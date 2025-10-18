@@ -14,6 +14,10 @@ type CoverProps = {
   audioPlaying: boolean;
 };
 
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const assetPath = (path: string) => `${BASE_PATH}${path}`;
+const COVER_IMAGE = assetPath("/cover-placeholder.jpg");
+
 const CoverWrapper = styled.section`
   position: relative;
   min-height: 100vh;
@@ -33,7 +37,7 @@ const CoverWrapper = styled.section`
       rgba(189, 127, 136, 0.65) 40%,
       rgba(61, 42, 47, 0.85) 100%
     ),
-    url("/cover-placeholder.jpg") center / cover no-repeat;
+    url("${COVER_IMAGE}") center / cover no-repeat;
 `;
 
 const Heading = styled(motion.h1)`

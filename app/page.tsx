@@ -16,6 +16,10 @@ import CountdownTimer from "@/components/CountdownTimer";
 import IntroOverlay from "@/components/IntroOverlay";
 import { galaEventJsonLd } from "@/lib/seo";
 
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const assetPath = (path: string) => `${BASE_PATH}${path}`;
+const VENUE_MAP_IMAGE = assetPath("/mapa-hacienda.jpg");
+
 const ScrollContainer = styled.div<{ $locked: boolean }>`
   height: 100vh;
   overflow-y: auto;
@@ -319,7 +323,7 @@ const VenueMap = styled.div`
       rgba(255, 255, 255, 0.08),
       rgba(183, 120, 122, 0.12)
     ),
-    url("/mapa-hacienda.jpg") center / cover no-repeat;
+    url("${VENUE_MAP_IMAGE}") center / cover no-repeat;
   border: 1px solid rgba(183, 120, 122, 0.22);
   box-shadow: ${({ theme }) => theme.shadow.soft};
 `;
@@ -378,7 +382,7 @@ const MapPulse = styled.span`
   }
 `;
 
-const AUDIO_SRC = "/audio/ambient.mp3";
+const AUDIO_SRC = assetPath("/audio/ambient.mp3");
 
 export default function Home() {
   const [showOverlay, setShowOverlay] = useState(true);
